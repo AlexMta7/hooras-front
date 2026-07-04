@@ -1,32 +1,50 @@
-# React + TypeScript + Vite
+# Hooras — Social Hours Platform Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + TypeScript frontend for the Social Hours Platform, built on the Hooras design system.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+pnpm install
+cp .env.example .env
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Configure `VITE_API_BASE_URL` in `.env` (defaults to `https://social-hours.example.edu`).
+
+## API types
+
+`openapi.yml` is imported from the backend project and is the source of truth. TypeScript types are generated once and committed to `src/api/schema.ts`.
+
+When `openapi.yml` changes, regenerate manually:
+
+```bash
+pnpm exec openapi-typescript openapi.yml -o src/api/schema.ts
+```
+
+There is no `gen:api` npm script — regeneration is intentional and manual.
+
+## Development
+
+```bash
+pnpm dev
+```
+
+## Build & lint
+
+```bash
+pnpm build
+pnpm lint
+```
+
+## Features
+
+- JWT auth with role-based navigation (top navbar with flyout menus)
+- React Query data layer over a typed fetch client
+- Core flows: dashboard, profile, projects, applications, assignments, hour logs, documents, rules, reports, certificates
+
+## Stack
+
+- Vite, React 19, TypeScript
+- TanStack Router + React Query
+- Radix UI primitives, Tailwind CSS v4
+- TipTap rich text editor
