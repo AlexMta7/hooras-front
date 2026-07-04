@@ -99,16 +99,18 @@ Weights: 400, 500, 600, 700. Token: `--font-gilroy` (legacy name, maps to Manrop
 
 | Name | Value | Token |
 |------|-------|-------|
-| 8 | 8px | `--spacing-8` |
-| 16 | 16px | `--spacing-16` |
-| 24 | 24px | `--spacing-24` |
-| 32 | 32px | `--spacing-32` |
-| 40 | 40px | `--spacing-40` |
-| 48 | 48px | `--spacing-48` |
-| 56 | 56px | `--spacing-56` |
-| 64 | 64px | `--spacing-64` |
-| 72 | 72px | `--spacing-72` |
-| 96 | 96px | `--spacing-96` |
+| 8 | 8px | `--space-8` |
+| 16 | 16px | `--space-16` |
+| 24 | 24px | `--space-24` |
+| 32 | 32px | `--space-32` |
+| 40 | 40px | `--space-40` |
+| 48 | 48px | `--space-48` |
+| 56 | 56px | `--space-56` |
+| 64 | 64px | `--space-64` |
+| 72 | 72px | `--space-72` |
+| 96 | 96px | `--space-96` |
+
+Use `gap-[var(--space-8)]` etc. for explicit design-system spacing. Standard Tailwind utilities (`p-8`, `gap-4`) use the default Tailwind scale.
 
 ### Border Radius
 
@@ -154,6 +156,23 @@ Color `#ffffff`, border 1px solid `#ffffff`, border-radius 4px, no background fi
 
 ### Social Sign-In Button
 Full-width with provider logo left, text right. Light variant: card bg, foreground text, 1px hairline border. Dark variant: ink-navy bg, paper text, no border. Padding 12px 16px, border-radius 8px.
+
+### Form Controls
+
+Shared tokens live in `src/components/forms/field-styles.ts`. Use these values for all form fields and the rich-text editor.
+
+| Property | Value | Tailwind / token |
+|----------|-------|------------------|
+| Single-line height | 40px | `h-10` (Tailwind spacing scale) |
+| Input padding | 12px × 8px | `px-3 py-2` |
+| Field stack gap | 12px | `gap-[var(--element-gap)]` or `gap-3` |
+| Input radius | 8px | `rounded-lg` (`--radius-inputs`) |
+| Label typography | 14px / 500 | `text-[length:var(--text-body-sm)] font-medium` |
+| Focus ring | 2px + offset | `focus-visible:ring-2 focus-visible:ring-offset-2` |
+
+**Editor:** Content area uses the same padding as inputs (`px-3 py-2`). Toolbar uses `p-1` with horizontal scroll (`flex-nowrap overflow-x-auto`). Do not apply `overflow-hidden` on the focus-ring shell.
+
+**Exceptions:** Textareas use `fieldTextareaBase` (no fixed height). OTP cells use `h-12 w-11`. Multi-select triggers use `fieldTriggerMultiBase` (`min-h-10`, grows with chips).
 
 ### Elevated Product Card
 `bg-card`, border-radius 16px. Three-layer theme-aware shadow (`--shadow-sm-2`). Often sits in front of Coral Magenta or Sky Cyan decorative blob.
