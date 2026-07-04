@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -98,12 +98,17 @@ function ToolbarButton({
   return (
     <Button
       type="button"
-      variant={active ? 'secondary' : 'ghost'}
+      variant="ghost"
       size="icon-sm"
       aria-label={label}
+      aria-pressed={active}
       title={label}
       disabled={disabled}
-      className={cn(active && 'text-primary')}
+      className={cn(
+        'shrink-0',
+        active &&
+          'bg-primary/15 text-primary shadow-none hover:bg-primary/20 hover:text-primary',
+      )}
       onClick={onClick}
     >
       {children}
@@ -140,7 +145,7 @@ export function Editor({
         'aria-required': required ? 'true' : 'false',
         'aria-describedby': error ? `${id}-error` : hint ? `${id}-hint` : '',
         class:
-          'tiptap qwerty-editor min-h-[320px] w-full px-4 py-3 outline-none focus-visible:outline-none',
+          'tiptap qwerty-editor min-h-[320px] w-full min-w-0 px-3 py-2 outline-none focus-visible:outline-none',
       },
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -153,6 +158,22 @@ export function Editor({
       })
     },
   })
+
+  const [, setToolbarRevision] = useState(0)
+
+  useEffect(() => {
+    if (!editor) return
+
+    const syncToolbar = () => setToolbarRevision((revision) => revision + 1)
+
+    editor.on('selectionUpdate', syncToolbar)
+    editor.on('transaction', syncToolbar)
+
+    return () => {
+      editor.off('selectionUpdate', syncToolbar)
+      editor.off('transaction', syncToolbar)
+    }
+  }, [editor])
 
   const setLink = () => {
     if (!editor) return
@@ -176,13 +197,13 @@ export function Editor({
     <FieldWrapper id={id} label={label} hint={hint} error={error} disabled={disabled}>
       <div
         className={cn(
-          'overflow-hidden rounded-lg border border-border bg-muted text-foreground transition-all focus-within:border-ring focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background',
+          'rounded-lg border border-border bg-muted text-foreground transition-all focus-within:border-ring focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background',
           error &&
             'border-destructive focus-within:border-destructive focus-within:ring-destructive',
           className,
         )}
       >
-        <div className="flex flex-wrap items-center gap-1 border-b border-border bg-card/70 p-2">
+        <div className="flex min-w-max flex-nowrap items-center gap-1.5 overflow-x-auto border-b border-border bg-card/70 p-1.5">
           <ToolbarButton
             label="Undo"
             disabled={!editor?.can().undo()}
@@ -197,7 +218,7 @@ export function Editor({
           >
             <Redo2 />
           </ToolbarButton>
-          <span className="mx-1 h-6 w-px bg-border" />
+          <span className="mx-1 h-6 w-px shrink-0 bg-border" />
           <ToolbarButton
             active={editor?.isActive('bold')}
             label="Bold"
@@ -226,7 +247,7 @@ export function Editor({
           >
             <Highlighter />
           </ToolbarButton>
-          <span className="mx-1 h-6 w-px bg-border" />
+          <span className="mx-1 h-6 w-px shrink-0 bg-border" />
           <ToolbarButton
             active={editor?.isActive('paragraph')}
             label="Paragraph"
@@ -276,7 +297,7 @@ export function Editor({
           >
             <Code />
           </ToolbarButton>
-          <span className="mx-1 h-6 w-px bg-border" />
+          <span className="mx-1 h-6 w-px shrink-0 bg-border" />
           <ToolbarButton
             active={editor?.isActive({ textAlign: 'left' })}
             label="Align left"
@@ -298,7 +319,7 @@ export function Editor({
           >
             <AlignRight />
           </ToolbarButton>
-          <span className="mx-1 h-6 w-px bg-border" />
+          <span className="mx-1 h-6 w-px shrink-0 bg-border" />
           <ToolbarButton
             active={editor?.isActive('link')}
             label="Link"
@@ -314,7 +335,9 @@ export function Editor({
             <Unlink />
           </ToolbarButton>
         </div>
-        <EditorContent editor={editor} />
+        <div className="min-w-0">
+          <EditorContent editor={editor} />
+        </div>
       </div>
     </FieldWrapper>
   )

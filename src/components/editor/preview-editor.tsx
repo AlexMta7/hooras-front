@@ -8,7 +8,7 @@ export interface PreviewEditorProps {
 
 export function PreviewEditor({ content, className }: PreviewEditorProps) {
   return (
-    <div className={cn('rounded-lg border border-border bg-muted/60 p-4', className)}>
+    <div className={cn('rounded-lg border border-border bg-muted/60 px-3 py-2', className)}>
       <PreviewClient content={content} />
     </div>
   )
