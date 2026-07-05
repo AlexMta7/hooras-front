@@ -100,7 +100,11 @@ function expandPath(path: string, params?: Record<string, unknown>): string {
   })
 }
 
-function buildUrl(path: string, pathParams?: Record<string, unknown>, params?: QueryParams): string {
+export function buildApiUrl(
+  path: string,
+  pathParams?: Record<string, unknown>,
+  params?: QueryParams,
+): string {
   const url = new URL(expandPath(path, pathParams), API_BASE_URL)
   if (params) {
     for (const [key, value] of Object.entries(params)) {
@@ -146,7 +150,7 @@ async function request<T>(
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(buildUrl(path, pathParams, params), {
+  const response = await fetch(buildApiUrl(path, pathParams, params), {
     ...rest,
     headers,
   })
@@ -197,6 +201,36 @@ export const api = {
       method: 'DELETE',
       params: options?.params as QueryParams | undefined,
       pathParams: options?.path as Record<string, unknown> | undefined,
+    })
+  },
+  postJson<T = unknown>(
+    path: string,
+    options?: { body?: unknown; path?: Record<string, unknown>; params?: QueryParams },
+  ): Promise<T> {
+    return request<T>(path, {
+      method: 'POST',
+      params: options?.params,
+      pathParams: options?.path,
+      body: options?.body === undefined ? undefined : JSON.stringify(options.body),
+    })
+  },
+  postFormData(path: string, formData: FormData, pathParams?: Record<string, unknown>) {
+    const headers = new Headers()
+    const token = tokenGetter()
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
+    }
+
+    return fetch(buildApiUrl(path, pathParams), {
+      method: 'POST',
+      headers,
+      body: formData,
+    }).then(async (response) => {
+      const body = await parseResponseBody(response)
+      if (!response.ok) {
+        throw new ApiError(response.status, body, getErrorMessage(body))
+      }
+      return body
     })
   },
 }
