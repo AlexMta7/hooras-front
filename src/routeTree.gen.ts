@@ -22,6 +22,7 @@ import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectsNewRouteImport } from './routes/projects/new'
+import { Route as ProjectsJobSearchRouteImport } from './routes/projects/job-search'
 import { Route as ProjectsProjectIdIndexRouteImport } from './routes/projects/$projectId/index'
 import { Route as ProjectsProjectIdEditRouteImport } from './routes/projects/$projectId/edit'
 
@@ -90,6 +91,11 @@ const ProjectsNewRoute = ProjectsNewRouteImport.update({
   path: '/projects/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsJobSearchRoute = ProjectsJobSearchRouteImport.update({
+  id: '/projects/job-search',
+  path: '/projects/job-search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdIndexRoute = ProjectsProjectIdIndexRouteImport.update({
   id: '/projects/$projectId/',
   path: '/projects/$projectId/',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
+  '/projects/job-search': typeof ProjectsJobSearchRoute
   '/projects/new': typeof ProjectsNewRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$projectId/edit': typeof ProjectsProjectIdEditRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
+  '/projects/job-search': typeof ProjectsJobSearchRoute
   '/projects/new': typeof ProjectsNewRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId/edit': typeof ProjectsProjectIdEditRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/rules': typeof RulesRoute
+  '/projects/job-search': typeof ProjectsJobSearchRoute
   '/projects/new': typeof ProjectsNewRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$projectId/edit': typeof ProjectsProjectIdEditRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reports'
     | '/rules'
+    | '/projects/job-search'
     | '/projects/new'
     | '/projects/'
     | '/projects/$projectId/edit'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reports'
     | '/rules'
+    | '/projects/job-search'
     | '/projects/new'
     | '/projects'
     | '/projects/$projectId/edit'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reports'
     | '/rules'
+    | '/projects/job-search'
     | '/projects/new'
     | '/projects/'
     | '/projects/$projectId/edit'
@@ -219,6 +231,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ReportsRoute: typeof ReportsRoute
   RulesRoute: typeof RulesRoute
+  ProjectsJobSearchRoute: typeof ProjectsJobSearchRoute
   ProjectsNewRoute: typeof ProjectsNewRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ProjectsProjectIdEditRoute: typeof ProjectsProjectIdEditRoute
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/job-search': {
+      id: '/projects/job-search'
+      path: '/projects/job-search'
+      fullPath: '/projects/job-search'
+      preLoaderRoute: typeof ProjectsJobSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId/': {
       id: '/projects/$projectId/'
       path: '/projects/$projectId'
@@ -347,6 +367,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ReportsRoute: ReportsRoute,
   RulesRoute: RulesRoute,
+  ProjectsJobSearchRoute: ProjectsJobSearchRoute,
   ProjectsNewRoute: ProjectsNewRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   ProjectsProjectIdEditRoute: ProjectsProjectIdEditRoute,
