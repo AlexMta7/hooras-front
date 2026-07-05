@@ -21,6 +21,126 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/setup/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get first-run setup status */
+        get: operations["getSetupStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/setup/modules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List modules available during setup */
+        get: operations["listSetupModules"];
+        /** Install and enable selected domain modules */
+        put: operations["configureSetupModules"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/setup/instance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save instance settings during setup */
+        put: operations["saveSetupInstance"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/setup/connectors/{type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Install and configure an auth or student-data connector */
+        put: operations["configureSetupConnector"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/setup/admin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create initial admin user during setup */
+        post: operations["createSetupAdmin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/setup/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test configured connectors during setup */
+        post: operations["testSetupConnectors"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/setup/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Complete first-run setup */
+        post: operations["completeSetup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/capabilities": {
         parameters: {
             query?: never;
@@ -1026,6 +1146,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/document-requirements/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete or deactivate requirement
+         * @description Physically deletes when no uploads exist; otherwise sets active to false.
+         */
+        delete: operations["deleteDocumentRequirement"];
+        options?: never;
+        head?: never;
+        /**
+         * Update document requirement
+         * @description Requires admin or coordinator role. Use active false to deactivate without deleting upload history.
+         */
+        patch: operations["updateDocumentRequirement"];
+        trace?: never;
+    };
     "/api/v1/documents": {
         parameters: {
             query?: never;
@@ -1503,24 +1647,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/document-requirements/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Auto-generated from Express route (DELETE /api/v1/document-requirements/{id}) */
-        delete: operations["deleteApiV1Document-requirementsId"];
-        options?: never;
-        head?: never;
-        /** Auto-generated from Express route (PATCH /api/v1/document-requirements/{id}) */
-        patch: operations["patchApiV1Document-requirementsId"];
-        trace?: never;
-    };
     "/api/v1/files/.+/": {
         parameters: {
             query?: never;
@@ -1538,15 +1664,174 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/companies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all companies */
+        get: operations["listCompanies"];
+        put?: never;
+        /** Create a company */
+        post: operations["createCompany"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/companies/{companyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a company by ID */
+        get: operations["getCompany"];
+        put?: never;
+        post?: never;
+        /** Delete a company */
+        delete: operations["deleteCompany"];
+        options?: never;
+        head?: never;
+        /** Update a company */
+        patch: operations["updateCompany"];
+        trace?: never;
+    };
+    "/api/v1/job-search/scrape-contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Auto-generated from Express route (POST /api/v1/job-search/scrape-contact) */
+        post: operations["postApiV1Job-searchScrape-contact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/job-search/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Auto-generated from Express route (POST /api/v1/job-search/search) */
+        post: operations["postApiV1Job-searchSearch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Company: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            description?: string | null;
+            /** Format: email */
+            email?: string | null;
+            phone?: string | null;
+            /** Format: uri */
+            website?: string | null;
+            address?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        CompanyInput: {
+            name: string;
+            description?: string | null;
+            /** Format: email */
+            email?: string | null;
+            phone?: string | null;
+            /** Format: uri */
+            website?: string | null;
+            address?: string | null;
+        };
+        CompanyPatch: {
+            name?: string;
+            description?: string | null;
+            /** Format: email */
+            email?: string | null;
+            phone?: string | null;
+            /** Format: uri */
+            website?: string | null;
+            address?: string | null;
+        };
         HealthStatus: {
             /** @enum {string} */
             status: "ok" | "degraded" | "down";
+            /** @enum {string} */
+            db?: "ok" | "down";
+            setupCompleted?: boolean;
             /** Format: date-time */
             checkedAt: string;
+        };
+        SetupStatus: {
+            completed: boolean;
+            collegeName: string;
+            settings: Record<string, never>;
+            steps: Record<string, never>;
+            missingRequirements: string[];
+        };
+        SetupModuleOption: {
+            moduleKey: string;
+            displayName: string;
+            version: string;
+            moduleType: string;
+            description?: string;
+            dependencies?: string[];
+            /** @enum {string} */
+            setupTier: "required" | "recommended" | "optional";
+            configurationSchema?: Record<string, never>;
+            installed?: boolean;
+        };
+        SetupInstanceInput: {
+            collegeName: string;
+            locale?: string;
+            timezone?: string;
+            demoMode?: boolean;
+        };
+        SetupConnectorInput: {
+            moduleKey: string;
+            useDemoProvider?: boolean;
+            values?: Record<string, never>;
+            secrets?: {
+                [key: string]: string;
+            };
+        };
+        SetupAdminInput: {
+            username: string;
+            password: string;
+            displayName?: string;
+            /** Format: email */
+            email?: string;
+        };
+        SetupConnectorTestResult: {
+            allOk: boolean;
+            results: {
+                type?: string;
+                moduleKey?: string;
+                ok?: boolean;
+                message?: string;
+            }[];
         };
         ModuleCapability: {
             key: string;
@@ -2033,7 +2318,12 @@ export interface components {
         DocumentRequirementInput: {
             key: string;
             label: string;
+            description?: string;
             required: boolean;
+            /** @enum {string} */
+            scope?: "global" | "project" | "program";
+            /** Format: uuid */
+            projectId?: string;
             appliesTo?: {
                 projectType?: string;
                 facultyCode?: string;
@@ -2044,9 +2334,36 @@ export interface components {
             requiresApproval?: boolean;
             templateId?: string;
         };
+        /** @description Partial document requirement update. All fields are optional. */
+        DocumentRequirementPatch: {
+            key?: string;
+            label?: string;
+            description?: string;
+            required?: boolean;
+            active?: boolean;
+            /** @enum {string} */
+            scope?: "global" | "project" | "program";
+            /** Format: uuid */
+            projectId?: string;
+            appliesTo?: {
+                projectType?: string;
+                facultyCode?: string;
+                programCode?: string;
+            };
+            allowedFileTypes?: string[];
+            maxFileSizeMb?: number;
+            requiresApproval?: boolean;
+            templateId?: string;
+        };
         DocumentRequirement: components["schemas"]["DocumentRequirementInput"] & {
             /** Format: uuid */
             id: string;
+            active?: boolean;
+            createdBy?: string;
+        };
+        DocumentRequirementDeleteResult: components["schemas"]["DocumentRequirement"] & {
+            /** @description True when the requirement was physically removed (no uploads). */
+            deleted?: boolean;
         };
         DocumentUploadInput: {
             /** Format: uuid */
@@ -2203,6 +2520,7 @@ export interface components {
         StudentRef: string;
         ProviderId: string;
         ProjectId: string;
+        CompanyId: string;
         ImportResultId: string;
         ApplicationId: string;
         AssignmentId: string;
@@ -2233,6 +2551,243 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HealthStatus"];
                 };
+            };
+        };
+    };
+    getSetupStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Setup status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupStatus"];
+                };
+            };
+        };
+    };
+    listSetupModules: {
+        parameters: {
+            query?: {
+                type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Module catalog for setup wizard */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupModuleOption"][];
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    configureSetupModules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    moduleKeys: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Updated setup status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupStatus"];
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    saveSetupInstance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetupInstanceInput"];
+            };
+        };
+        responses: {
+            /** @description Updated setup status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupStatus"];
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    configureSetupConnector: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                type: "auth" | "student-data";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetupConnectorInput"];
+            };
+        };
+        responses: {
+            /** @description Updated setup status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupStatus"];
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createSetupAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetupAdminInput"];
+            };
+        };
+        responses: {
+            /** @description Updated setup status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupStatus"];
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    testSetupConnectors: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Connector test results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupConnectorTestResult"];
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    completeSetup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Setup completed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        completed: boolean;
+                        /** Format: date-time */
+                        completedAt?: string;
+                        /** Format: uri */
+                        baseUrl?: string;
+                    };
+                };
+            };
+            /** @description Setup already completed */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -3709,6 +4264,54 @@ export interface operations {
             };
         };
     };
+    deleteDocumentRequirement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Document requirement deleted or deactivated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentRequirementDeleteResult"];
+                };
+            };
+        };
+    };
+    updateDocumentRequirement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentRequirementPatch"];
+            };
+        };
+        responses: {
+            /** @description Document requirement updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentRequirement"];
+                };
+            };
+        };
+    };
     listDocuments: {
         parameters: {
             query?: {
@@ -4444,43 +5047,155 @@ export interface operations {
             };
         };
     };
-    "deleteApiV1Document-requirementsId": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "patchApiV1Document-requirementsId": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     "getApiV1Files.+": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listCompanies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of companies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"][];
+                };
+            };
+        };
+    };
+    createCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompanyInput"];
+            };
+        };
+        responses: {
+            /** @description Company created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+        };
+    };
+    getCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                companyId: components["parameters"]["CompanyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Company details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+        };
+    };
+    deleteCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                companyId: components["parameters"]["CompanyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Company deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                companyId: components["parameters"]["CompanyId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompanyPatch"];
+            };
+        };
+        responses: {
+            /** @description Company updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+        };
+    };
+    "postApiV1Job-searchScrape-contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiV1Job-searchSearch": {
         parameters: {
             query?: never;
             header?: never;

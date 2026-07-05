@@ -375,21 +375,21 @@ export function JobSearchPage() {
             name="job-category"
             value={category}
             options={CATEGORY_OPTIONS}
-            onChange={(e) => setCategory(String(e.target.value))}
+            onChange={(e) => setCategory(e.target.value as string)}
           />
           <SelectField
             label="Modality / Location"
             name="job-location"
             value={location}
             options={LOCATION_OPTIONS}
-            onChange={(e) => setLocation(String(e.target.value))}
+            onChange={(e) => setLocation(e.target.value as string)}
           />
           <SelectField
             label="Max results"
             name="job-limit"
             value={limit}
             options={LIMIT_OPTIONS}
-            onChange={(e) => setLimit(String(e.target.value))}
+            onChange={(e) => setLimit(e.target.value as string)}
           />
         </div>
 
