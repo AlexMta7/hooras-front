@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { useAuth } from '@/auth/AuthProvider'
-import { isStudent, canManageProjects } from '@/auth/roles'
+import { isStudent, canManageProjects, usesStudentApi } from '@/auth/roles'
 import {
   useHourLogs,
   useCreateHourLog,
   useApproveHourLog,
   useRejectHourLog,
   useAssignments,
+  type StudentAssignment,
 } from '@/api/hooks'
+import { getEvidenceUploadUrl, parseEvidenceUploadResponse } from '@/api/files'
+import { getStoredToken } from '@/api/client'
 import type { ApprovalStatus } from '@/api/types'
 import {
   SelectField,
@@ -43,12 +46,13 @@ const CATEGORY_OPTIONS = [
 export function HourLogsPage() {
   const { user } = useAuth()
   const student = isStudent(user?.roles)
+  const studentScope = usesStudentApi(user?.roles)
   const canReview = canManageProjects(user?.roles)
 
   const [status, setStatus] = useState<ApprovalStatus | ''>('')
-  const hourLogsQuery = useHourLogs(status ? { status } : undefined)
-  const assignmentsQuery = useAssignments()
-  const createMutation = useCreateHourLog()
+  const hourLogsQuery = useHourLogs(status ? { status } : undefined, { studentScope })
+  const assignmentsQuery = useAssignments(undefined, { studentScope })
+  const createMutation = useCreateHourLog({ studentScope })
   const approveMutation = useApproveHourLog()
   const rejectMutation = useRejectHourLog()
 
@@ -66,10 +70,19 @@ export function HourLogsPage() {
   const [rejectReason, setRejectReason] = useState('')
 
   const assignmentOptions =
-    assignmentsQuery.data?.map((a) => ({
-      label: `${a.studentRef} — ${a.projectId}`,
-      value: a.id,
-    })) ?? []
+    assignmentsQuery.data?.map((a) => {
+      const assignment = a as StudentAssignment
+      const projectLabel = studentScope && assignment.project?.title
+        ? assignment.project.title
+        : assignment.projectId
+      const label = studentScope ? projectLabel : `${assignment.studentRef} — ${assignment.projectId}`
+      return { label, value: assignment.id }
+    }) ?? []
+
+  const evidenceUploadHeaders: Record<string, string> | undefined = (() => {
+    const token = getStoredToken()
+    return token ? { Authorization: `Bearer ${token}` } : undefined
+  })()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -82,7 +95,10 @@ export function HourLogsPage() {
         durationHours,
         category: category as 'community',
         description,
-        evidenceIds: evidence.filter((f) => f.status === 'done').map((f) => f.id),
+        evidenceIds: evidence
+          .filter((f) => f.status === 'done')
+          .map((f) => f.remoteUrl ?? f.id)
+          .filter(Boolean),
       })
       toastMutationSuccess('Hour log submitted')
       setShowForm(false)
@@ -197,6 +213,12 @@ export function HourLogsPage() {
               label="Evidence"
               name="evidence"
               value={evidence}
+              multiple
+              uploadUrl={studentScope ? getEvidenceUploadUrl() : undefined}
+              uploadHeaders={studentScope ? evidenceUploadHeaders : undefined}
+              mapUploadResponse={(response) => ({
+                remoteUrl: parseEvidenceUploadResponse(response),
+              })}
               onChange={(e) => setEvidence(e.target.value)}
             />
           </div>

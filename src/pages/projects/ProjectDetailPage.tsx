@@ -33,7 +33,7 @@ export function ProjectDetailPage({ projectId }: ProjectDetailPageProps) {
   const canManage = canManageProjects(user?.roles)
 
   const projectQuery = useProject(projectId)
-  const applicationsQuery = useProjectApplications(projectId)
+  const applicationsQuery = useProjectApplications(projectId, canManage)
   const publishMutation = usePublishProject()
   const archiveMutation = useArchiveProject()
   const applyMutation = useCreateApplication(projectId)

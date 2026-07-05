@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '@/auth/AuthProvider'
-import { canManageProjects } from '@/auth/roles'
+import { canManageProjects, usesStudentApi } from '@/auth/roles'
 import {
   useDocumentRequirements,
   useDocuments,
@@ -9,7 +9,9 @@ import {
   useApproveDocument,
   useRejectDocument,
 } from '@/api/hooks'
-import { TextField, SwitchField, UploadField, type UploadFieldItem } from '@/components/forms'
+import { fetchAuthenticatedFile, getDocumentUploadUrl } from '@/api/files'
+import { getStoredToken } from '@/api/client'
+import { SelectField, TextField, SwitchField, UploadField, type UploadFieldItem } from '@/components/forms'
 import { QueryState, ConfirmDialog } from '@/components/feedback'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { StatusBadge } from '@/components/layout/StatusBadge'
@@ -18,12 +20,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Editor } from '@/components/editor'
 import { toastMutationError, toastMutationSuccess } from '@/lib/mutations'
 
+async function openAuthenticatedFile(storageRef: string) {
+  try {
+    const blob = await fetchAuthenticatedFile(storageRef)
+    const url = URL.createObjectURL(blob)
+    window.open(url, '_blank', 'noopener,noreferrer')
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  } catch (error) {
+    toastMutationError(error, 'Unable to open file.')
+  }
+}
+
 export function DocumentsPage() {
   const { user } = useAuth()
   const canManage = canManageProjects(user?.roles)
+  const studentScope = usesStudentApi(user?.roles)
 
-  const requirementsQuery = useDocumentRequirements()
-  const documentsQuery = useDocuments()
+  const requirementsQuery = useDocumentRequirements({ studentScope })
+  const documentsQuery = useDocuments(undefined, { studentScope })
   const createRequirementMutation = useCreateDocumentRequirement()
   const registerUploadMutation = useRegisterDocumentUpload()
   const approveMutation = useApproveDocument()
@@ -40,6 +54,11 @@ export function DocumentsPage() {
 
   const [rejectId, setRejectId] = useState<string | null>(null)
   const [rejectReason, setRejectReason] = useState('')
+
+  const uploadHeaders: Record<string, string> | undefined = (() => {
+    const token = getStoredToken()
+    return token ? { Authorization: `Bearer ${token}` } : undefined
+  })()
 
   const handleCreateRequirement = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -102,7 +121,14 @@ export function DocumentsPage() {
 
   return (
     <div className="mx-auto max-w-[var(--page-max-width)] px-4 py-10 sm:px-10">
-      <PageHeader title="Documents" description="Manage requirements and document uploads." />
+      <PageHeader
+        title="Documents"
+        description={
+          studentScope
+            ? 'Upload required documents and track review status.'
+            : 'Manage requirements and document uploads.'
+        }
+      />
 
       <Tabs defaultValue="requirements">
         <TabsList className="mb-6">
@@ -154,8 +180,32 @@ export function DocumentsPage() {
                   key={req.id}
                   className="rounded-3xl border border-border bg-card px-6 py-4 shadow-[var(--shadow-sm)]"
                 >
-                  <p className="font-medium text-foreground">{req.label}</p>
-                  <p className="text-sm text-muted-foreground">{req.key}</p>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">{req.label}</p>
+                      <p className="text-sm text-muted-foreground">{req.key}</p>
+                      {'uploadStatus' in req && typeof req.uploadStatus === 'string' ? (
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          Status: {req.uploadStatus}
+                        </p>
+                      ) : null}
+                    </div>
+                    {studentScope ? (
+                      <div className="min-w-[240px]">
+                        <UploadField
+                          label={`Upload for ${req.label}`}
+                          name={`upload-${req.id}`}
+                          maxFiles={1}
+                          uploadUrl={getDocumentUploadUrl(req.id)}
+                          uploadHeaders={uploadHeaders}
+                          onChange={() => {
+                            void requirementsQuery.refetch()
+                            void documentsQuery.refetch()
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -163,39 +213,41 @@ export function DocumentsPage() {
         </TabsContent>
 
         <TabsContent value="uploads" className="space-y-6">
-          <form
-            onSubmit={handleRegisterUpload}
-            className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-sm)]"
-          >
-            <h2 className="mb-4 text-lg font-semibold text-foreground">Register upload</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <TextField
-                label="Owner reference"
-                name="ownerRef"
-                value={ownerRef}
-                onChange={(e) => setOwnerRef(e.target.value)}
-              />
-              <TextField
-                label="Requirement ID"
-                name="documentRequirementId"
-                value={uploadRequirementId}
-                onChange={(e) => setUploadRequirementId(e.target.value)}
-                hint={requirementOptions.length ? `Options: ${requirementOptions.map((o) => o.label).join(', ')}` : undefined}
-              />
-            </div>
-            <div className="mt-4">
-              <UploadField
-                label="File"
-                name="upload"
-                value={uploadFiles}
-                maxFiles={1}
-                onChange={(e) => setUploadFiles(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="mt-4" disabled={registerUploadMutation.isPending}>
-              Register
-            </Button>
-          </form>
+          {!studentScope ? (
+            <form
+              onSubmit={handleRegisterUpload}
+              className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-sm)]"
+            >
+              <h2 className="mb-4 text-lg font-semibold text-foreground">Register upload</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <TextField
+                  label="Owner reference"
+                  name="ownerRef"
+                  value={ownerRef}
+                  onChange={(e) => setOwnerRef(e.target.value)}
+                />
+                <SelectField
+                  label="Requirement"
+                  name="documentRequirementId"
+                  value={uploadRequirementId}
+                  options={[{ label: 'Select requirement', value: '' }, ...requirementOptions]}
+                  onChange={(e) => setUploadRequirementId(String(e.target.value))}
+                />
+              </div>
+              <div className="mt-4">
+                <UploadField
+                  label="File"
+                  name="upload"
+                  value={uploadFiles}
+                  maxFiles={1}
+                  onChange={(e) => setUploadFiles(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="mt-4" disabled={registerUploadMutation.isPending}>
+                Register
+              </Button>
+            </form>
+          ) : null}
 
           <QueryState
             isLoading={documentsQuery.isLoading}
@@ -217,18 +269,31 @@ export function DocumentsPage() {
                         <h2 className="font-semibold text-foreground">{doc.fileName}</h2>
                         <StatusBadge status={doc.status} kind="approval" />
                       </div>
-                      <p className="mt-1 text-sm text-muted-foreground">Owner: {doc.ownerRef}</p>
+                      {!studentScope ? (
+                        <p className="mt-1 text-sm text-muted-foreground">Owner: {doc.ownerRef}</p>
+                      ) : null}
                     </div>
-                    {canManage && doc.status === 'pending' ? (
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={() => void handleApprove(doc.id)}>
-                          Approve
+                    <div className="flex flex-wrap gap-2">
+                      {doc.storageRef ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => void openAuthenticatedFile(doc.storageRef)}
+                        >
+                          View file
                         </Button>
-                        <Button size="sm" variant="secondary" onClick={() => setRejectId(doc.id)}>
-                          Reject
-                        </Button>
-                      </div>
-                    ) : null}
+                      ) : null}
+                      {canManage && doc.status === 'pending' ? (
+                        <>
+                          <Button size="sm" onClick={() => void handleApprove(doc.id)}>
+                            Approve
+                          </Button>
+                          <Button size="sm" variant="secondary" onClick={() => setRejectId(doc.id)}>
+                            Reject
+                          </Button>
+                        </>
+                      ) : null}
+                    </div>
                   </div>
                 </article>
               ))}

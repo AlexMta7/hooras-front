@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '@/auth/AuthProvider'
-import { canManageProjects } from '@/auth/roles'
+import { canManageProjects, usesStudentApi } from '@/auth/roles'
 import {
   useApplications,
   useApproveApplication,
@@ -25,10 +25,12 @@ const STATUS_OPTIONS: { label: string; value: ApplicationStatus | '' }[] = [
 ]
 
 export function ApplicationsPage() {
-  const canReview = canManageProjects(useAuth().user?.roles)
+  const { user } = useAuth()
+  const canReview = canManageProjects(user?.roles)
+  const studentScope = usesStudentApi(user?.roles)
 
   const [status, setStatus] = useState<ApplicationStatus | ''>('')
-  const applicationsQuery = useApplications(status ? { status } : undefined)
+  const applicationsQuery = useApplications(status ? { status } : undefined, { studentScope })
   const approveMutation = useApproveApplication()
   const rejectMutation = useRejectApplication()
 
@@ -94,7 +96,9 @@ export function ApplicationsPage() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-semibold text-foreground">{application.studentRef}</h2>
+                    {!studentScope ? (
+                      <h2 className="font-semibold text-foreground">{application.studentRef}</h2>
+                    ) : null}
                     <StatusBadge status={application.status} kind="application" />
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">
