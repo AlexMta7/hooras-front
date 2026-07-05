@@ -30,3 +30,7 @@ export function canReviewApplications(userRoles: UserRole[] | undefined): boolea
 export function canViewReports(userRoles: UserRole[] | undefined): boolean {
   return hasAnyRole(userRoles, REPORT_ROLES)
 }
+
+export function isManagementUser(userRoles: UserRole[] | undefined): boolean {
+  return hasAnyRole(userRoles, MANAGEMENT_ROLES)
+}
