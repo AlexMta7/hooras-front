@@ -5,10 +5,16 @@ function resolveApiBaseUrl(): string {
   if (configured && configured !== 'SAME_ORIGIN') {
     return configured.replace(/\/+$/, '')
   }
+  // Local dev: call the API directly (CORS is enabled on the backend).
+  // Production (Netlify): same-origin /api/* proxy in netlify.toml.
+  if (import.meta.env.DEV) {
+    const devApi = import.meta.env.VITE_DEV_API_URL?.trim()
+    return (devApi || 'http://localhost:3000').replace(/\/+$/, '')
+  }
   if (typeof window !== 'undefined') {
     return window.location.origin
   }
-  return import.meta.env.DEV ? 'http://localhost:3000' : ''
+  return ''
 }
 
 export const API_BASE_URL = resolveApiBaseUrl()
@@ -160,10 +166,21 @@ async function request<T>(
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(buildApiUrl(path, pathParams, params), {
-    ...rest,
-    headers,
-  })
+  let response: Response
+  try {
+    response = await fetch(buildApiUrl(path, pathParams, params), {
+      ...rest,
+      headers,
+    })
+  } catch {
+    throw new ApiError(
+      0,
+      null,
+      import.meta.env.DEV
+        ? `No se pudo conectar con la API en ${API_BASE_URL}. Inicia el backend con "pnpm dev" en hooras-back.`
+        : 'No se pudo conectar con la API.',
+    )
+  }
 
   const body = await parseResponseBody(response)
 
