@@ -233,18 +233,21 @@ export function ProjectDetailPage({ projectId }: ProjectDetailPageProps) {
       </QueryState>
 
       <Dialog open={applyOpen} onOpenChange={setApplyOpen}>
-        <DialogContent className="max-w-2xl rounded-3xl">
-          <DialogHeader>
-            <DialogTitle>Apply to project</DialogTitle>
-          </DialogHeader>
-          <Editor
-            label="Motivation"
-            name="motivation"
-            value={motivation}
-            onChange={(e) => setMotivation(e.target.value)}
-            placeholder="Explain why you want to join this project…"
-          />
-          <DialogFooter>
+        <DialogContent className="flex max-h-[min(90dvh,720px)] w-[calc(100%-2rem)] max-w-2xl flex-col gap-0 overflow-hidden rounded-3xl p-0">
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-6">
+            <DialogHeader className="mb-4">
+              <DialogTitle>Apply to project</DialogTitle>
+            </DialogHeader>
+            <Editor
+              label="Motivation"
+              name="motivation"
+              variant="compact"
+              value={motivation}
+              onChange={(e) => setMotivation(e.target.value)}
+              placeholder="Explain why you want to join this project…"
+            />
+          </div>
+          <DialogFooter className="border-t border-border px-6 py-4">
             <Button variant="secondary" onClick={() => setApplyOpen(false)}>
               Cancel
             </Button>

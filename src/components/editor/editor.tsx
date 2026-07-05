@@ -43,6 +43,7 @@ export interface EditorProps {
   disabled?: boolean
   required?: boolean
   className?: string
+  variant?: 'default' | 'compact'
   onChange?: (e: { target: { name: string; value: string }; persist: () => void }) => void
 }
 
@@ -126,6 +127,7 @@ export function Editor({
   disabled = false,
   required = false,
   className,
+  variant = 'default',
   onChange,
 }: EditorProps) {
   const generatedId = useId()
@@ -145,7 +147,9 @@ export function Editor({
         'aria-required': required ? 'true' : 'false',
         'aria-describedby': error ? `${id}-error` : hint ? `${id}-hint` : '',
         class:
-          'tiptap qwerty-editor min-h-[320px] w-full min-w-0 px-3 py-2 outline-none focus-visible:outline-none',
+          variant === 'compact'
+            ? 'tiptap qwerty-editor min-h-[140px] w-full min-w-0 px-3 py-2 outline-none focus-visible:outline-none'
+            : 'tiptap qwerty-editor min-h-[320px] w-full min-w-0 px-3 py-2 outline-none focus-visible:outline-none',
       },
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -197,13 +201,13 @@ export function Editor({
     <FieldWrapper id={id} label={label} hint={hint} error={error} disabled={disabled}>
       <div
         className={cn(
-          'rounded-lg border border-border bg-muted text-foreground transition-all focus-within:border-ring focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background',
+          'min-w-0 overflow-hidden rounded-lg border border-border bg-muted text-foreground transition-all focus-within:border-ring focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background',
           error &&
             'border-destructive focus-within:border-destructive focus-within:ring-destructive',
           className,
         )}
       >
-        <div className="flex min-w-max flex-nowrap items-center gap-1.5 overflow-x-auto border-b border-border bg-card/70 p-1.5">
+        <div className="flex w-full min-w-0 items-center gap-1.5 overflow-x-auto border-b border-border bg-card/70 p-1.5">
           <ToolbarButton
             label="Undo"
             disabled={!editor?.can().undo()}
