@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { api, setStoredToken, setTokenGetter, getStoredToken } from '@/api/client'
-import type { AuthLoginRequest, AuthTokenResponse, CurrentUser, UserRole } from '@/api/types'
+import type { AuthLoginRequest, CurrentUser, UserRole } from '@/api/types'
 import { hasAnyRole, hasRole } from '@/auth/roles'
 
 interface AuthContextValue {
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null
     }
 
-    const currentUser = await api.get<CurrentUser>('/api/v1/me')
+    const currentUser = await api.get('/api/v1/me')
     setUser(currentUser)
     return currentUser
   }, [token])
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [token, refreshUser])
 
   const login = useCallback(async (credentials: AuthLoginRequest) => {
-    const response = await api.post<AuthTokenResponse>('/api/v1/auth/login', credentials)
+    const response = await api.post('/api/v1/auth/login', { body: credentials })
     setStoredToken(response.accessToken)
     setToken(response.accessToken)
     setUser(response.user ?? null)

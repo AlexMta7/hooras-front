@@ -38,6 +38,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/modules/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List available modules in the catalog
+         * @description Requires admin role. Returns discoverable modules and whether each is installed.
+         */
+        get: operations["listAvailableModules"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/modules": {
         parameters: {
             query?: never;
@@ -95,6 +115,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/modules/{moduleKey}/install": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Install a module */
+        post: operations["installModule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/modules/{moduleKey}/uninstall": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Uninstall a module */
+        post: operations["uninstallModule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/modules/{moduleKey}/enable": {
         parameters: {
             query?: never;
@@ -140,6 +194,24 @@ export interface paths {
         get: operations["getModuleConfig"];
         /** Configure a module */
         put: operations["configureModule"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/modules/{moduleKey}/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List module feature toggles */
+        get: operations["listModuleFeatures"];
+        /** Update module feature toggles */
+        put: operations["updateModuleFeatures"];
         post?: never;
         delete?: never;
         options?: never;
@@ -402,6 +474,177 @@ export interface paths {
          * @description Requires the authenticated user to have a studentRef. Returns 403 otherwise.
          */
         post: operations["refreshMyStudentProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List current student's project applications */
+        get: operations["getMyApplications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List current student's assignments */
+        get: operations["getMyAssignments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/hour-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List current student's hour logs */
+        get: operations["getMyHourLogs"];
+        put?: never;
+        /** Create hour log for active assignment */
+        post: operations["createMyHourLog"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload evidence file for hour logs */
+        post: operations["uploadMyEvidence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/document-requirements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List applicable document requirements with upload status */
+        get: operations["getMyDocumentRequirements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/document-requirements/{requirementId}/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload document for a requirement */
+        post: operations["uploadMyDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/document-uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List current student's document uploads */
+        get: operations["getMyDocumentUploads"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Student notification inbox */
+        get: operations["getMyNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mark notification as read */
+        patch: operations["markMyNotificationRead"];
+        trace?: never;
+    };
+    "/api/v1/me/social-services/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Completed social service participations */
+        get: operations["getMySocialServicesHistory"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1170,6 +1413,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Auto-generated from Express route (GET /api/v1/admin-users) */
+        get: operations["getApiV1Admin-users"];
+        put?: never;
+        /** Auto-generated from Express route (POST /api/v1/admin-users) */
+        post: operations["postApiV1Admin-users"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin-users/{adminUserId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Auto-generated from Express route (GET /api/v1/admin-users/{adminUserId}) */
+        get: operations["getApiV1Admin-usersAdminuserid"];
+        put?: never;
+        post?: never;
+        /** Auto-generated from Express route (DELETE /api/v1/admin-users/{adminUserId}) */
+        delete: operations["deleteApiV1Admin-usersAdminuserid"];
+        options?: never;
+        head?: never;
+        /** Auto-generated from Express route (PATCH /api/v1/admin-users/{adminUserId}) */
+        patch: operations["patchApiV1Admin-usersAdminuserid"];
+        trace?: never;
+    };
+    "/api/v1/assignments/{assignmentId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Auto-generated from Express route (POST /api/v1/assignments/{assignmentId}/complete) */
+        post: operations["postApiV1AssignmentsAssignmentidComplete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/config/instance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Auto-generated from Express route (GET /api/v1/config/instance) */
+        get: operations["getApiV1ConfigInstance"];
+        /** Auto-generated from Express route (PUT /api/v1/config/instance) */
+        put: operations["putApiV1ConfigInstance"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/config/smtp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Auto-generated from Express route (GET /api/v1/config/smtp) */
+        get: operations["getApiV1ConfigSmtp"];
+        /** Auto-generated from Express route (PUT /api/v1/config/smtp) */
+        put: operations["putApiV1ConfigSmtp"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/document-requirements/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Auto-generated from Express route (DELETE /api/v1/document-requirements/{id}) */
+        delete: operations["deleteApiV1Document-requirementsId"];
+        options?: never;
+        head?: never;
+        /** Auto-generated from Express route (PATCH /api/v1/document-requirements/{id}) */
+        patch: operations["patchApiV1Document-requirementsId"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1203,6 +1554,8 @@ export interface components {
             license?: string;
             platformVersion?: string;
             capabilities: string[];
+            dependencies?: string[];
+            features?: components["schemas"]["ModuleFeatureDefinition"][];
             /**
              * @example [
              *       "auth.v1"
@@ -1221,14 +1574,50 @@ export interface components {
             webhookSubscriptions?: string[];
             eventSubscriptions?: string[];
         };
+        ModuleFeatureDefinition: {
+            key: string;
+            name: string;
+            description?: string;
+            default: boolean;
+            capabilities?: string[];
+        };
+        AvailableModule: {
+            moduleKey: string;
+            displayName: string;
+            version: string;
+            moduleType: components["schemas"]["ModuleType"];
+            description?: string;
+            dependencies?: string[];
+            capabilities: string[];
+            features?: components["schemas"]["ModuleFeatureDefinition"][];
+            providedContracts?: string[];
+            installed: boolean;
+        };
+        ModuleFeature: {
+            featureKey: string;
+            name: string;
+            description?: string;
+            enabled: boolean;
+            capabilities?: string[];
+        };
+        ModuleFeaturesInput: {
+            features: {
+                featureKey: string;
+                enabled: boolean;
+            }[];
+        };
         InstalledModule: {
             moduleKey: string;
             displayName: string;
             version: string;
             moduleType: components["schemas"]["ModuleType"];
             status: components["schemas"]["ModuleStatus"];
+            /** @enum {string} */
+            installState?: "available" | "installed" | "uninstalled";
             enabled: boolean;
+            dependencies?: string[];
             capabilities?: string[];
+            features?: components["schemas"]["ModuleFeature"][];
             health?: components["schemas"]["ModuleHealth"];
             /** Format: date-time */
             installedAt?: string;
@@ -1853,6 +2242,26 @@ export interface operations {
             };
         };
     };
+    listAvailableModules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Available modules */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvailableModule"][];
+                };
+            };
+        };
+    };
     listModules: {
         parameters: {
             query?: never;
@@ -1913,6 +2322,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModuleManifest"];
+                };
+            };
+        };
+    };
+    installModule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                moduleKey: components["parameters"]["ModuleKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Module installed */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstalledModule"];
+                };
+            };
+        };
+    };
+    uninstallModule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                moduleKey: components["parameters"]["ModuleKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Module uninstalled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        moduleKey: string;
+                        uninstalled: boolean;
+                    };
                 };
             };
         };
@@ -2005,6 +2461,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModuleConfig"];
+                };
+            };
+        };
+    };
+    listModuleFeatures: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                moduleKey: components["parameters"]["ModuleKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Module features */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModuleFeature"][];
+                };
+            };
+        };
+    };
+    updateModuleFeatures: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                moduleKey: components["parameters"]["ModuleKey"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModuleFeaturesInput"];
+            };
+        };
+        responses: {
+            /** @description Updated module features */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModuleFeature"][];
                 };
             };
         };
@@ -2370,6 +2874,224 @@ export interface operations {
             };
             /** @description Current user is not a student */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMyApplications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Student applications */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectApplication"][];
+                };
+            };
+        };
+    };
+    getMyAssignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Student assignments with embedded project */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMyHourLogs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Hour logs for student assignments */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createMyHourLog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Hour log created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    uploadMyEvidence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Evidence uploaded */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMyDocumentRequirements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Document requirement matrix */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    uploadMyDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requirementId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Document upload registered */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMyDocumentUploads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Document uploads */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMyNotifications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notifications */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    markMyNotificationRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Updated notification */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMySocialServicesHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Social service history */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3522,6 +4244,222 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AcademicProgram"][];
                 };
+            };
+        };
+    };
+    "getApiV1Admin-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiV1Admin-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "getApiV1Admin-usersAdminuserid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "deleteApiV1Admin-usersAdminuserid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "patchApiV1Admin-usersAdminuserid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiV1AssignmentsAssignmentidComplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getApiV1ConfigInstance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    putApiV1ConfigInstance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getApiV1ConfigSmtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    putApiV1ConfigSmtp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "deleteApiV1Document-requirementsId": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "patchApiV1Document-requirementsId": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { queryKeys, type QueryParams } from '@/api/hooks/query-keys'
-import type { Assignment } from '@/api/types'
 
 export interface AssignmentFilters {
   studentRef?: string
@@ -12,7 +11,7 @@ export function useAssignments(filters?: AssignmentFilters) {
   const params = filters as QueryParams | undefined
   return useQuery({
     queryKey: queryKeys.assignments(params),
-    queryFn: () => api.get<Assignment[]>('/api/v1/assignments', params),
+    queryFn: () => api.get('/api/v1/assignments', { params }),
   })
 }
 
@@ -26,7 +25,10 @@ export function useSetAssignmentSupervisor() {
       assignmentId: string
       supervisorRef: string
     }) =>
-      api.put<Assignment>(`/api/v1/assignments/${assignmentId}/supervisor`, { supervisorRef }),
+      api.put('/api/v1/assignments/{assignmentId}/supervisor', {
+        path: { assignmentId },
+        body: { supervisorRef },
+      }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['assignments'] })
     },

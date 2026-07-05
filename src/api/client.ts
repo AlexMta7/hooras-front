@@ -1,7 +1,66 @@
+import type { paths } from './schema'
+
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'https://social-hours.example.edu'
 
 const TOKEN_STORAGE_KEY = 'hooras-token'
+
+type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
+type SuccessStatus = 200 | 201 | 202 | 204
+
+type OperationPath<Method extends HttpMethod> = {
+  [Path in keyof paths]: Method extends keyof paths[Path]
+    ? paths[Path][Method] extends never
+      ? never
+      : Path
+    : never
+}[keyof paths]
+
+type Operation<Method extends HttpMethod, Path extends OperationPath<Method>> = paths[Path][Method]
+
+type OperationQuery<Method extends HttpMethod, Path extends OperationPath<Method>> =
+  Operation<Method, Path> extends { parameters: { query?: infer Query } }
+    ? Query extends never
+      ? never
+      : Query
+    : never
+
+type OperationPathParams<Method extends HttpMethod, Path extends OperationPath<Method>> =
+  Operation<Method, Path> extends { parameters: { path: infer PathParams } }
+    ? PathParams
+    : never
+
+type OperationBody<Method extends HttpMethod, Path extends OperationPath<Method>> =
+  Operation<Method, Path> extends {
+    requestBody?: { content: { 'application/json': infer Body } }
+  }
+    ? Body
+    : never
+
+type OperationResponse<Method extends HttpMethod, Path extends OperationPath<Method>> =
+  Operation<Method, Path> extends { responses: infer Responses }
+    ? Responses[Extract<keyof Responses, SuccessStatus>] extends {
+        content: { 'application/json': infer Body }
+      }
+      ? Body
+      : undefined
+    : never
+
+type QueryParams = Record<string, string | number | boolean | undefined | null>
+
+type RequestOptions<Method extends HttpMethod, Path extends OperationPath<Method>> =
+  (OperationQuery<Method, Path> extends never
+    ? { params?: never }
+    : { params?: OperationQuery<Method, Path> }) &
+    (OperationPathParams<Method, Path> extends never
+      ? { path?: never }
+      : { path: OperationPathParams<Method, Path> })
+
+type BodyRequestOptions<Method extends HttpMethod, Path extends OperationPath<Method>> =
+  RequestOptions<Method, Path> &
+    (OperationBody<Method, Path> extends never
+      ? { body?: never }
+      : { body?: OperationBody<Method, Path> })
 
 export class ApiError extends Error {
   readonly status: number
@@ -33,10 +92,16 @@ export function setStoredToken(token: string | null) {
   }
 }
 
-type QueryParams = Record<string, string | number | boolean | undefined | null>
+function expandPath(path: string, params?: Record<string, unknown>): string {
+  if (!params) return path
+  return path.replace(/\{([^}]+)\}/g, (_match, key: string) => {
+    const value = params[key]
+    return encodeURIComponent(String(value))
+  })
+}
 
-function buildUrl(path: string, params?: QueryParams): string {
-  const url = new URL(path, API_BASE_URL)
+function buildUrl(path: string, pathParams?: Record<string, unknown>, params?: QueryParams): string {
+  const url = new URL(expandPath(path, pathParams), API_BASE_URL)
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== null && value !== '') {
@@ -67,9 +132,9 @@ function getErrorMessage(body: unknown): string | undefined {
 
 async function request<T>(
   path: string,
-  init: RequestInit & { params?: QueryParams } = {},
+  init: RequestInit & { params?: QueryParams; pathParams?: Record<string, unknown> } = {},
 ): Promise<T> {
-  const { params, headers: initHeaders, ...rest } = init
+  const { params, pathParams, headers: initHeaders, ...rest } = init
   const headers = new Headers(initHeaders)
 
   const token = tokenGetter()
@@ -81,7 +146,7 @@ async function request<T>(
     headers.set('Content-Type', 'application/json')
   }
 
-  const response = await fetch(buildUrl(path, params), {
+  const response = await fetch(buildUrl(path, pathParams, params), {
     ...rest,
     headers,
   })
@@ -96,28 +161,42 @@ async function request<T>(
 }
 
 export const api = {
-  get<T>(path: string, params?: QueryParams) {
-    return request<T>(path, { method: 'GET', params })
+  get<Path extends OperationPath<'get'>>(path: Path, options?: RequestOptions<'get', Path>) {
+    return request<OperationResponse<'get', Path>>(path, {
+      method: 'GET',
+      params: options?.params as QueryParams | undefined,
+      pathParams: options?.path as Record<string, unknown> | undefined,
+    })
   },
-  post<T>(path: string, body?: unknown) {
-    return request<T>(path, {
+  post<Path extends OperationPath<'post'>>(path: Path, options?: BodyRequestOptions<'post', Path>) {
+    return request<OperationResponse<'post', Path>>(path, {
       method: 'POST',
-      body: body === undefined ? undefined : JSON.stringify(body),
+      params: options?.params as QueryParams | undefined,
+      pathParams: options?.path as Record<string, unknown> | undefined,
+      body: options?.body === undefined ? undefined : JSON.stringify(options.body),
     })
   },
-  put<T>(path: string, body?: unknown) {
-    return request<T>(path, {
+  put<Path extends OperationPath<'put'>>(path: Path, options?: BodyRequestOptions<'put', Path>) {
+    return request<OperationResponse<'put', Path>>(path, {
       method: 'PUT',
-      body: body === undefined ? undefined : JSON.stringify(body),
+      params: options?.params as QueryParams | undefined,
+      pathParams: options?.path as Record<string, unknown> | undefined,
+      body: options?.body === undefined ? undefined : JSON.stringify(options.body),
     })
   },
-  patch<T>(path: string, body?: unknown) {
-    return request<T>(path, {
+  patch<Path extends OperationPath<'patch'>>(path: Path, options?: BodyRequestOptions<'patch', Path>) {
+    return request<OperationResponse<'patch', Path>>(path, {
       method: 'PATCH',
-      body: body === undefined ? undefined : JSON.stringify(body),
+      params: options?.params as QueryParams | undefined,
+      pathParams: options?.path as Record<string, unknown> | undefined,
+      body: options?.body === undefined ? undefined : JSON.stringify(options.body),
     })
   },
-  delete<T>(path: string) {
-    return request<T>(path, { method: 'DELETE' })
+  delete<Path extends OperationPath<'delete'>>(path: Path, options?: RequestOptions<'delete', Path>) {
+    return request<OperationResponse<'delete', Path>>(path, {
+      method: 'DELETE',
+      params: options?.params as QueryParams | undefined,
+      pathParams: options?.path as Record<string, unknown> | undefined,
+    })
   },
 }
