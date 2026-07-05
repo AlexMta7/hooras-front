@@ -4,6 +4,7 @@ import { TextField, PasswordField } from '@/components/forms'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/auth/AuthProvider'
 import { toastMutationError } from '@/lib/mutations'
+import heroImage from '@/assets/hero.png'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -26,35 +27,47 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-[var(--shadow-sm-2)]">
-        <div className="mb-8 text-center">
-          <h1 className="text-[length:var(--text-display-sm)] font-semibold text-foreground">
-            Sign in
-          </h1>
-          <p className="mt-2 text-muted-foreground">Access the Social Hours Platform</p>
+    <div className="flex h-dvh items-center justify-center overflow-hidden px-4 py-4 sm:px-6 sm:py-6">
+      <div className="grid h-full max-h-[720px] w-full max-w-5xl grid-rows-[minmax(10rem,14rem)_minmax(0,1fr)] overflow-hidden rounded-3xl border border-border bg-muted shadow-[var(--shadow-sm-2)] md:grid-cols-[minmax(0,48%)_minmax(360px,1fr)] md:grid-rows-1">
+        <div className="relative min-h-0 bg-muted">
+          <img
+            src={heroImage}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+          />
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <TextField
-            label="Username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
-            required
-          />
-          <PasswordField
-            label="Password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            required
-          />
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in…' : 'Sign in'}
-          </Button>
-        </form>
+        <div className="flex min-h-0 items-center justify-center overflow-y-auto rounded-3xl bg-card p-6 sm:p-8 md:p-10">
+          <div className="w-full max-w-md">
+            <div className="mb-8 text-center md:text-left">
+              <h1 className="text-[length:var(--text-display-sm)] font-semibold text-foreground">
+                Sign in
+              </h1>
+              <p className="mt-2 text-muted-foreground">Access the Social Hours Platform</p>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <TextField
+                label="Username"
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                required
+              />
+              <PasswordField
+                label="Password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Signing in…' : 'Sign in'}
+              </Button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   )
