@@ -1,14 +1,26 @@
-import { useStudentProfile, useRefreshProfile } from '@/api/hooks'
+import { useStudentProfile, useRefreshProfile, useDocumentRequirements } from '@/api/hooks'
+import { useAuth } from '@/auth/AuthProvider'
+import { usesStudentApi } from '@/auth/roles'
+import { getStoredToken } from '@/api/client'
 import { QueryState } from '@/components/feedback'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { StatusBadge } from '@/components/layout/StatusBadge'
 import { Button } from '@/components/ui/button'
 import { PreviewEditor } from '@/components/editor'
 import { toastMutationError, toastMutationSuccess } from '@/lib/mutations'
+import { DocumentRequirementCard } from '@/pages/documents/DocumentRequirementCard'
 
 export function ProfilePage() {
+  const { user } = useAuth()
+  const studentScope = usesStudentApi(user?.roles)
   const profileQuery = useStudentProfile()
   const refreshMutation = useRefreshProfile()
+  const documentsQuery = useDocumentRequirements({ studentScope: true })
+
+  const uploadHeaders = (() => {
+    const token = getStoredToken()
+    return token ? { Authorization: `Bearer ${token}` } : undefined
+  })()
 
   const handleRefresh = async () => {
     try {
@@ -109,20 +121,24 @@ export function ProfilePage() {
               ) : null}
             </section>
 
-            {profileQuery.data.requiredDocuments?.length ? (
+            {(documentsQuery.data?.length ?? 0) > 0 ? (
               <section className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-sm)]">
                 <h2 className="text-lg font-semibold text-foreground">Required documents</h2>
-                <ul className="mt-4 space-y-2">
-                  {profileQuery.data.requiredDocuments.map((doc) => (
-                    <li
-                      key={doc.id}
-                      className="flex items-center justify-between rounded-lg border border-border px-4 py-3"
-                    >
-                      <span className="font-medium text-foreground">{doc.label}</span>
-                      <span className="text-sm text-muted-foreground">{doc.key}</span>
-                    </li>
+                <div className="mt-4 space-y-4">
+                  {documentsQuery.data?.map((req) => (
+                    <DocumentRequirementCard
+                      key={req.id}
+                      requirement={req}
+                      canManage={false}
+                      studentScope={studentScope}
+                      uploadHeaders={uploadHeaders}
+                      onUploadComplete={() => {
+                        void documentsQuery.refetch()
+                        void profileQuery.refetch()
+                      }}
+                    />
                   ))}
-                </ul>
+                </div>
               </section>
             ) : null}
 
