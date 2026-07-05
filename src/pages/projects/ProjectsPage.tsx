@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { Search } from 'lucide-react'
 import { useAuth } from '@/auth/AuthProvider'
 import { canManageProjects, isStudent } from '@/auth/roles'
 import { useProjects, type ProjectFilters } from '@/api/hooks'
@@ -61,9 +62,17 @@ export function ProjectsPage() {
         description="Browse and manage social hours projects."
         actions={
           canManage ? (
-            <Button asChild>
-              <Link to="/projects/new">New project</Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button asChild variant="outline">
+                <Link to="/projects/job-search">
+                  <Search className="mr-2 h-4 w-4" />
+                  Find jobs
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link to="/projects/new">New project</Link>
+              </Button>
+            </div>
           ) : undefined
         }
       />
