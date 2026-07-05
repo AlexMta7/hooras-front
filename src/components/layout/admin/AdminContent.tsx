@@ -9,7 +9,7 @@ export function AdminContent({ children, className }: AdminContentProps) {
   return (
     <div
       data-slot="admin-content"
-      className={cn('flex flex-1 flex-col gap-4 overflow-auto p-4 pt-0', className)}
+      className={cn('flex flex-1 flex-col gap-4 overflow-auto', className)}
     >
       {children}
     </div>

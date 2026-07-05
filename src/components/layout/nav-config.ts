@@ -1,7 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   BookOpen,
-  Building2,
   ClipboardList,
   Clock,
   FileText,
@@ -9,7 +8,6 @@ import {
   LayoutDashboard,
   ScrollText,
   Settings,
-  Shield,
   User,
 } from 'lucide-react'
 import type { UserRole } from '@/api/types'
@@ -64,12 +62,9 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: 'Manage',
-    roles: ['coordinator', 'admin', 'auditor'],
+    roles: ['coordinator', 'admin'],
     items: [
       { label: 'Rules', to: '/rules', roles: ['coordinator', 'admin'], icon: Settings },
-      { label: 'Modules', to: '/modules', roles: ['admin'], icon: BookOpen },
-      { label: 'Providers', to: '/providers', roles: ['admin'], icon: Building2 },
-      { label: 'Audit', to: '/audit', roles: ['admin'], icon: Shield },
     ],
   },
 ]
