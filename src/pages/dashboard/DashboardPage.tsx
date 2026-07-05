@@ -25,11 +25,17 @@ export function DashboardPage() {
   const progressQuery = useProgressReport(reportsView)
   const projectReportQuery = useProjectReport(reportsView)
 
+  const description = studentView
+    ? 'Your social hours workspace overview.'
+    : reportsView
+      ? 'Platform progress and project metrics.'
+      : 'Use the navigation menu to access your workspace.'
+
   return (
     <div className="mx-auto max-w-[var(--page-max-width)] px-4 py-10 sm:px-10">
       <PageHeader
         title={`Welcome${user?.displayName ? `, ${user.displayName}` : ''}`}
-        description="Your social hours workspace overview."
+        description={description}
       />
 
       {studentView ? (
@@ -113,10 +119,6 @@ export function DashboardPage() {
               </div>
             </section>
           </QueryState>
-
-          <Button asChild variant="secondary">
-            <Link to="/reports">Open reports</Link>
-          </Button>
         </div>
       ) : null}
 

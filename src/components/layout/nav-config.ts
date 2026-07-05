@@ -1,6 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
 import {
-  BarChart3,
   BookOpen,
   Building2,
   ClipboardList,
@@ -68,7 +67,6 @@ export const NAV_GROUPS: NavGroup[] = [
     roles: ['coordinator', 'admin', 'auditor'],
     items: [
       { label: 'Rules', to: '/rules', roles: ['coordinator', 'admin'], icon: Settings },
-      { label: 'Reports', to: '/reports', roles: ['coordinator', 'admin', 'auditor'], icon: BarChart3 },
       { label: 'Modules', to: '/modules', roles: ['admin'], icon: BookOpen },
       { label: 'Providers', to: '/providers', roles: ['admin'], icon: Building2 },
       { label: 'Audit', to: '/audit', roles: ['admin'], icon: Shield },
