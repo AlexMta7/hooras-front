@@ -2312,6 +2312,13 @@ export interface components {
             rejectionReason?: string;
             /** Format: date-time */
             createdAt: string;
+            evidence?: components["schemas"]["HourLogEvidence"][];
+        };
+        HourLogEvidence: {
+            /** Format: uuid */
+            id: string;
+            fileName: string;
+            storageRef: string;
         };
         /** @enum {string} */
         ApprovalStatus: "pending" | "approved" | "rejected";

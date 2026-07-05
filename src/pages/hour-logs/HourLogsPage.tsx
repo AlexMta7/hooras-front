@@ -27,6 +27,7 @@ import { StatusBadge } from '@/components/layout/StatusBadge'
 import { Button } from '@/components/ui/button'
 import { toastMutationError, toastMutationSuccess } from '@/lib/mutations'
 import { Calendar, Clock, Check, X } from 'lucide-react'
+import { HourLogEvidenceList } from '@/pages/hour-logs/HourLogEvidenceList'
 
 const STATUS_OPTIONS: { label: string; value: ApprovalStatus | '' }[] = [
   { label: 'All statuses', value: '' },
@@ -298,6 +299,10 @@ export function HourLogsPage() {
                       <p className="text-sm text-muted-foreground mt-3 bg-muted/20 border-l-2 border-border pl-3 py-1 rounded-r-lg italic line-clamp-3">
                         {log.description}
                       </p>
+                    ) : null}
+
+                    {log.evidence?.length ? (
+                      <HourLogEvidenceList evidence={log.evidence} />
                     ) : null}
                   </div>
 

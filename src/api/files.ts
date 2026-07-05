@@ -30,6 +30,21 @@ export function parseDocumentUploadResponse(body: unknown): string {
   throw new Error('Unexpected document upload response')
 }
 
+export async function openAuthenticatedFile(
+  storageRef: string,
+  onError?: (error: unknown) => void,
+): Promise<void> {
+  try {
+    const blob = await fetchAuthenticatedFile(storageRef)
+    const url = URL.createObjectURL(blob)
+    window.open(url, '_blank', 'noopener,noreferrer')
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  } catch (error) {
+    onError?.(error)
+    throw error
+  }
+}
+
 export async function fetchAuthenticatedFile(storageRef: string): Promise<Blob> {
   const headers = new Headers()
   const token = getStoredToken()
