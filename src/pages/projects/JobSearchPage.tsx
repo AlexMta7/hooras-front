@@ -181,6 +181,7 @@ function ImportButton({ job }: ImportButtonProps) {
       organizationName: job.company,
       location: job.location,
       categories: job.categories,
+      publicSafe: false,
     }
     try {
       await importMutation.mutateAsync(body)
@@ -374,21 +375,21 @@ export function JobSearchPage() {
             name="job-category"
             value={category}
             options={CATEGORY_OPTIONS}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setCategory(String(e.target.value))}
           />
           <SelectField
             label="Modality / Location"
             name="job-location"
             value={location}
             options={LOCATION_OPTIONS}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => setLocation(String(e.target.value))}
           />
           <SelectField
             label="Max results"
             name="job-limit"
             value={limit}
             options={LIMIT_OPTIONS}
-            onChange={(e) => setLimit(e.target.value)}
+            onChange={(e) => setLimit(String(e.target.value))}
           />
         </div>
 
